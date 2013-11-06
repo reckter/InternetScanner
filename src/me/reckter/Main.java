@@ -18,5 +18,6 @@ public class Main {
         crawler.setStartURL("wlp-systems.de");
         crawler.crawl();
 
+
     }
 }
