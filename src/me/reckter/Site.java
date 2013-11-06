@@ -34,39 +34,46 @@ public class Site {
     public void load() throws IOException {
 
         URLConnection connection = url.openConnection();
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(
-                        connection.getInputStream()));
-        String inputLine;
-        String response = "";
+		    try{
+	        BufferedReader in = new BufferedReader(
+	                new InputStreamReader(
+	                        connection.getInputStream()));
 
-        while ((inputLine = in.readLine()) != null){
-            response += inputLine;
-        }
+	        String inputLine;
+	        String response = "";
 
-        in.close();
+	        while ((inputLine = in.readLine()) != null){
+	            response += inputLine;
+	        }
+
+	        in.close();
 
 
-        HTML = response.toString();
+	        HTML = response.toString();
 
-        isLoaded = true;
+	        isLoaded = true;
+	    } catch(Exception e){
+		    return;
+	    }
     }
 
     public void parseLinks(){
-        String[] parts = HTML.split("http://");
-        for(String part: parts){
-            for(int i = 0; i < part.length(); i++){
-                if(isEndCharacter((part.charAt(i)))){
-                    if(i >= 4){
-                        String matchingUrl = part.substring(0, i);
-                        if(matchingUrl.contains(".")){
-                            links.add(part.substring(0, i));
-                        }
-                    }
-                    i = part.length();
-                }
-            }
-        }
+	    if(isLoaded){
+	        String[] parts = HTML.split("http://");
+	        for(String part: parts){
+	            for(int i = 0; i < part.length(); i++){
+	                if(isEndCharacter((part.charAt(i)))){
+	                    if(i >= 4){
+	                        String matchingUrl = part.substring(0, i);
+	                        if(matchingUrl.contains(".")){
+	                            links.add(part.substring(0, i));
+	                        }
+	                    }
+	                    i = part.length();
+	                }
+	            }
+	        }
+	    }
     }
 
     public String getUrl() {
@@ -78,7 +85,9 @@ public class Site {
     }
 
     public String getHTML() {
-        return HTML;
+	    if(isLoaded)
+	        return HTML;
+	    return "";
     }
 
     public ArrayList<String> getLinks() {
