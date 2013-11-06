@@ -1,5 +1,7 @@
 package me.reckter;
 
+import sun.util.resources.LocaleNames_fi;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -23,6 +25,9 @@ public class LinkParser {
 
 	public void addSites(Site site){
 		sites.add(site);
+		if(sites.size() % 10 == 0){
+			Log.status(sites.size() + " sites to parse left");
+		}
 	}
 
 	public boolean hasSitesToParse(){

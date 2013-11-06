@@ -19,7 +19,7 @@ public class Main {
 	    Log.setShowVerboseLevel(false);
 
         SiteCrawler crawler = new SiteCrawler();
-        crawler.setStartURL("reddit.com");
+        crawler.setStartURL("reddit.com/r/all");
         crawler.crawl();
 
 
