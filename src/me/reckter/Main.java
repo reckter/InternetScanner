@@ -14,8 +14,12 @@ public class Main {
 
     static public void main(String[] args){
         Log.setConsoleLevel(Log.INFO);
+	    Log.setShowTimeSinceStart(true);
+	    Log.setShowModule(false);
+	    Log.setShowVerboseLevel(false);
+
         SiteCrawler crawler = new SiteCrawler();
-        crawler.setStartURL("wlp-systems.de");
+        crawler.setStartURL("google.com");
         crawler.crawl();
 
 

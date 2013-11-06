@@ -36,7 +36,7 @@ public class SiteCrawler {
                 site = new Site("http://" + currentURL);
                 crawledURLs.add(currentURL.toLowerCase());
                 if(crawledURLs.size() % 10 == 0){
-                    Log.info("crawled " + crawledURLs.size() + " sites");
+                    Log.status("crawled " + crawledURLs.size() + " sites");
                 }
 
                 site.load();
@@ -45,8 +45,13 @@ public class SiteCrawler {
 
                 for(String urlFetched: urlsFetched){
                     if(!crawledURLs.contains(urlFetched.toLowerCase()) && !toCrawlURLs.contains(urlFetched.toLowerCase())){
-                        if(toCrawlURLs.size() + crawledURLs.size() % 100 == 0)
-                            Log.info("found " + (toCrawlURLs.size() + crawledURLs.size())+ " urls");
+                        if((toCrawlURLs.size() + crawledURLs.size()) % 10 == 0){
+	                        if((toCrawlURLs.size() + crawledURLs.size()) % 100 == 0){
+		                        Log.info("found " + (toCrawlURLs.size() + crawledURLs.size())+ " urls");
+	                        } else {
+                                Log.note("found " + (toCrawlURLs.size() + crawledURLs.size())+ " urls");
+	                        }
+                        }
                         toCrawlURLs.add(urlFetched.toLowerCase());
                         Log.verbose("fetched " + urlFetched + " from " + currentURL);
                     }
@@ -59,6 +64,8 @@ public class SiteCrawler {
             }
             toCrawlURLs.removeFirst();
         }
+	    Log.important("crawler endet!");
+	    Log.important("with " + crawledURLs.size() + " fetched urls");
     }
 
     public void setStartURL(String startURL) {
