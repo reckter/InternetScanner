@@ -48,10 +48,11 @@ public class LinkParser {
 				}
 				while(sites.size() > 0){
 					Site site = sites.getFirst();
-					site.parseLinks();
-					ArrayList<String> urlsFetched = site.getLinks();
 
-					for(String urlFetched: urlsFetched){
+					site.parseLinks();
+					ArrayList<String> urlsFromSite = site.getLinks();
+
+					for(String urlFetched: urlsFromSite){
 						crawler.addUrl(urlFetched);
 					}
 					sites.removeFirst();

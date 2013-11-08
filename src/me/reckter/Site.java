@@ -29,7 +29,7 @@ public class Site {
 
 
     protected boolean isEndCharacter(char a){
-        if(a == ' ' || a == '\"' || a == '\'' || a == '<' || a == '>' || a == ')' || a == '(' || a == ']' || a == '[' || a == '{' || a == '}' || a == '#') {
+        if(a == ' ' || a == '|' || a == '\"' || a == '\'' || a == '<' || a == '>' || a == ')' || a == '(' || a == ']' || a == '[' || a == '{' || a == '}' || a == '#') {
             return true;
         }
         return false;
@@ -78,7 +78,7 @@ public class Site {
 	    StringBuffer response = new StringBuffer();
 
 	    while ((inputLine = in.readLine()) != null) {
-		    response.append(inputLine);
+		    response.append(inputLine + "\n");
 	    }
 	    in.close();
 

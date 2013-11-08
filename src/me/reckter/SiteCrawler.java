@@ -19,16 +19,19 @@ public class SiteCrawler {
     protected volatile LinkedList<String> toCrawlURLs;
     protected ArrayList<String> crawledURLs;
 	protected LinkParser parser;
+    protected RulesContainer rules;
 
 	protected long time;
 	public static long TIME_TO_PUSH = 20 * 1000;
 
 	protected String host = "http://brony.me/crawler/index.php";
+
     public SiteCrawler(){
         startURL = "";
         toCrawlURLs = new LinkedList<String>();
         crawledURLs = new ArrayList<String>();
 	    parser = new LinkParser(this);
+        rules = new RulesContainer();
     }
 
 
@@ -75,21 +78,35 @@ public class SiteCrawler {
 		pullSite.setUrlParameters("get=1&type=parsed");
 
 		pullSite.load();
+
+        Log.debug(pullSite.getHTML());
+
 		Log.info("parsing pulled parsed links");
 		parser.addSites(pullSite);
 
 		Log.info("pulling crawled links");
 
-		pullSite = new Site(host);
-		pullSite.setMethod("GET");
-		pullSite.setUrlParameters("get=1&type=crawled");
+		Site pullSite2 = new Site(host);
+		pullSite2.setMethod("GET");
+		pullSite2.setUrlParameters("get=1&type=crawled");
 
-		pullSite.load();
-		pullSite.parseLinks();
+		pullSite2.load();
+		pullSite2.parseLinks();
 		Log.info("parsing pulled crawled links");
-		crawledURLs.addAll(pullSite.getLinks());
+
+		for(String url: pullSite2.getLinks()){
+            crawledURLs.add(url);
+        }
+
+        Log.debug(String.valueOf(crawledURLs.size()));
+        for(String url:crawledURLs){
+            Log.debug(url);
+        }
 
 		Log.info("done.");
+
+
+
 	}
 
 	public void addUrl(String url){
@@ -102,7 +119,7 @@ public class SiteCrawler {
 				}
 			}
 			toCrawlURLs.add(url.toLowerCase());
-			Log.verbose("fetched " + url + " from " + url);
+			Log.verbose("fetched " + url);
 		}
 	}
 
@@ -128,18 +145,24 @@ public class SiteCrawler {
 		    }
 	        if(toCrawlURLs.size() > 0){
 	            try {
+
 	                currentURL = toCrawlURLs.getFirst();
-	                Log.info("searching " + currentURL);
+                    rules.addRule(currentURL);
 
-	                site = new Site("http://" + currentURL);
-	                crawledURLs.add(currentURL.toLowerCase());
-	                if(crawledURLs.size() % 10 == 0){
-	                    Log.status("crawled " + crawledURLs.size() + " sites");
-	                }
+                    if(rules.isAllowed(currentURL)){
+                        Log.info("searching " + currentURL);
 
-	                site.load();
-	                parser.addSites(site);
+                        site = new Site("http://" + currentURL);
+                        crawledURLs.add(currentURL.toLowerCase());
+                        if(crawledURLs.size() % 10 == 0){
+                            Log.status("crawled " + crawledURLs.size() + " sites");
+                        }
 
+                        site.load();
+                        parser.addSites(site);
+                    } else {
+                        Log.verbose("robots.txt denied the crawling of " + currentURL);
+                    }
 	            } catch (MalformedURLException e) {
 	                e.printStackTrace();
 	            } catch (IOException e) {

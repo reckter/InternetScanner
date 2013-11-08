@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="InternetScanner:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/InternetScanner_jar</output-path>
+    <root id="archive" name="InternetScanner.jar">
+      <element id="module-output" name="InternetScanner" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Util/out/Util/Util.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
