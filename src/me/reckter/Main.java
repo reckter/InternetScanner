@@ -13,14 +13,18 @@ import java.net.MalformedURLException;
 public class Main {
 
     static public void main(String[] args){
-        Log.setConsoleLevel(Log.INFO);
+        Log.setConsoleLevel(Log.DEBUG);
 	    Log.setShowTimeSinceStart(true);
 	    Log.setShowModule(false);
 	    Log.setShowVerboseLevel(false);
 
         SiteCrawler crawler = new SiteCrawler();
-        crawler.setStartURL("reddit.com/r/all");
-        crawler.crawl();
+	    try {
+		    crawler.pullState();
+	    } catch (IOException e) {
+		    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+	    }
+	    crawler.crawl();
 
 
     }

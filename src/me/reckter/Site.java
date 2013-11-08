@@ -16,13 +16,17 @@ public class Site {
     protected String urlString;
     private boolean isLoaded = false;
     protected String HTML;
+
     protected ArrayList<String> links;
+	protected String urlParameters = "";
+	protected String method = "GET";
 
     public Site(String url) throws MalformedURLException {
         this.url = new URL(url);
         this.urlString = url;
         this.links = new ArrayList<String>();
     }
+
 
     protected boolean isEndCharacter(char a){
         if(a == ' ' || a == '\"' || a == '\'' || a == '<' || a == '>' || a == ')' || a == '(' || a == ']' || a == '[' || a == '{' || a == '}' || a == '#') {
@@ -31,30 +35,56 @@ public class Site {
         return false;
     }
 
-    public void load() throws IOException {
+	public String getMethod() {
+		return method;
+	}
 
-        URLConnection connection = url.openConnection();
-		    try{
-	        BufferedReader in = new BufferedReader(
-	                new InputStreamReader(
-	                        connection.getInputStream()));
+	public void setMethod(String method) {
+		this.method = method;
+	}
 
-	        String inputLine;
-	        String response = "";
+	public String getUrlParameters() {
+		return urlParameters;
+	}
 
-	        while ((inputLine = in.readLine()) != null){
-	            response += inputLine;
-	        }
+	public void setUrlParameters(String urlParameters) {
+		this.urlParameters = urlParameters;
+	}
 
-	        in.close();
+	public void load() throws IOException {
 
+		if(method == "GET"){
+			url = new URL(urlString + "?" + urlParameters);
+		}
 
-	        HTML = response.toString();
+	    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+	    //add reuqest header
+	    con.setRequestMethod(method);
+	    //con.setRequestProperty("User-Agent", USER_AGENT);
+
+	    // Send post request
+		if(method == "POST"){
+		    con.setDoOutput(true);
+		    DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+		    wr.writeBytes(urlParameters);
+		    wr.flush();
+		    wr.close();
+		}
+
+	    BufferedReader in = new BufferedReader(
+			    new InputStreamReader(con.getInputStream()));
+	    String inputLine;
+	    StringBuffer response = new StringBuffer();
+
+	    while ((inputLine = in.readLine()) != null) {
+		    response.append(inputLine);
+	    }
+	    in.close();
+
+		HTML = response.toString();
 
 	        isLoaded = true;
-	    } catch(Exception e){
-		    return;
-	    }
     }
 
     public void parseLinks(){
